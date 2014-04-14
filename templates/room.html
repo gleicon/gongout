@@ -58,7 +58,7 @@
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2">
                 <h2>{{.RoomName}}</h2>
-                <video height="300" id="localVideo"></video>
+                <video height="300" id="localVideo" style="height: 150px;" oncontextmenu="return false;"></video>
                 <div id="remotesVideos"></div>
             </div>
         </div>
@@ -77,7 +77,7 @@
         // the id/element dom element that will hold "our" video
         localVideoEl: 'localVideo',
         // the id/element dom element that will hold remote videos
-        remoteVideosEl: 'remotesVideos',
+        remoteVideosEl: '',
         // immediately ask for camera access
         autoRequestMedia: true
     });
@@ -86,6 +86,35 @@
         // you can name it anything
         webrtc.joinRoom('{{.RoomName}}');
     });
+
+    webrtc.on('videoAdded', function (video, peer) {
+                console.log('video added', peer);
+                var remotes = document.getElementById('remotesVideos');
+                if (remotes) {
+                    var d = document.createElement('div');
+                    d.className = 'videoContainer';
+                    d.id = 'container_' + webrtc.getDomId(peer);
+                    d.appendChild(video);
+                    var vol = document.createElement('div');
+                    vol.id = 'volume_' + peer.id;
+                    vol.className = 'volume_bar';
+                    video.onclick = function () {
+                        video.style.width = video.videoWidth + 'px';
+                        video.style.height = video.videoHeight + 'px';
+                    };
+                    d.appendChild(vol);
+                    remotes.appendChild(d);
+                }
+            });
+            webrtc.on('videoRemoved', function (video, peer) {
+                console.log('video removed ', peer);
+                var remotes = document.getElementById('remotesVideos');
+                var el = document.getElementById('container_' + webrtc.getDomId(peer));
+                if (remotes && el) {
+                    remotes.removeChild(el);
+                }
+            });
+
 
     </script>
 </body>
