@@ -29,11 +29,6 @@ install: server
 	mkdir -m 750 -p ${PREFIX}/assets
 	rsync -rupE assets ${PREFIX}
 	rsync -rupE templates ${PREFIX}
-	find ${PREFIX}/assets -type f -exec chmod 640 {} \;
-	find ${PREFIX}/assets -type d -exec chmod 750 {} \;
-	find ${PREFIX}/templates -type f -exec chmod 640 {} \;
-	find ${PREFIX}/templates -type d -exec chmod 750 {} \;
-	#chown -R www-data: ${PREFIX}
 
 uninstall:
 	rm -rf ${PREFIX}
